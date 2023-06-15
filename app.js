@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 const path = require("path");
 const userRouter = require("./routers/userRouter");
 
-app.use("/api/", userRouter);
+app.use("/upc-inc/api/", userRouter);
 
 
 if (process.env.NODE_ENV === "production") {
