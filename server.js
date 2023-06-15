@@ -1,6 +1,6 @@
 const app = require("./app");
 require("dotenv").config();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 9000;
 
 process.on("uncaughtException", (err) => {
   console.log(`Error: ${err.message}`);
