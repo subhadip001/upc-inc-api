@@ -19,6 +19,8 @@ const {
 
 router.route("/test").get(testController);
 
-router.route("/").get(getUserDetails).post(createNewUser).patch(updateUser);
+router.route("/fetch").get(getUserDetails);
+router.route("/register").post(createNewUser);
+router.route("/update").patch(updateUser);
 
 module.exports = router;
