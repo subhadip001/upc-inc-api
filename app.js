@@ -9,14 +9,13 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config({ path: "config/config.env" });
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
 
 const path = require("path");
 const userRouter = require("./routers/userRouter");
 
-app.use("/upc/api/", userRouter);
-
+app.use("/upc/api/v1", userRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
