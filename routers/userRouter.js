@@ -18,7 +18,7 @@ const {
 } = require("../controllers/userController");
 
 router.route("/test").get(testController);
-
+router.route("/check").post(getUserProfile);
 router.route("/fetch").get(getUserDetails);
 router.route("/register").post(createNewUser);
 router.route("/update").patch(updateUser);

@@ -1,17 +1,63 @@
 //write the code for the user controller here.
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModels");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
+const secret_key = "jwt-UPC-SeCrEt-KeY-FoR-AuThEnTiCaTiOn";
+
+const createToken = (id) => {
+  return jwt.sign({ id }, secret_key);
+};
 
 const getUserDetails = asyncHandler(async (req, res) => {
-  const { upc_id } = req.query;
+  const { upc_id, password } = req.query;
   console.log("get request : " + upc_id);
   const user = await User.findOne({ upc_id }).lean();
+
   if (!user) {
     return res.json({
-      message: "No such user , Please register before logging in!!!",
+      message: "Wrong UPC id or password!!!",
     });
   } else {
-    res.json(user);
+    const auth = await bcrypt.compare(password, user.password);
+    console.log(auth);
+    if (auth) {
+      const token = createToken(user._id);
+      res.cookie("jwt", token, {
+        withCredentials: true,
+        httpOnly: false,
+      });
+      res.status(201).json({ user: user, token: token });
+    } else {
+      return res.json({
+        message: "Wrong UPC id or password!!!",
+      });
+    }
+  }
+});
+const getUserProfile = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
+
+  const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, secret_key, async (err, decodedToken) => {
+      if (err) {
+        res.json({ status: false });
+        next();
+      } else {
+        const user = await User.findById(decodedToken.id);
+        if (user) {
+          res.json({ status: true, user: user });
+        } else {
+          res.json({ status: false });
+          next();
+        }
+      }
+    });
+  } else {
+    res.json({ status: false });
+    next();
   }
 });
 
@@ -25,6 +71,11 @@ const createNewUser = asyncHandler(async (req, res) => {
   const userreg = await User.create(userObject);
 
   if (userreg) {
+    const token = createToken(userreg._id);
+    res.cookie("jwt", token, {
+      withCredentials: true,
+      httpOnly: false,
+    });
     res.status(201).json({ message: `new user registered` });
   } else {
     res.status(400).json({ message: `Invalid user data received` });
@@ -77,4 +128,5 @@ module.exports = {
   getUserDetails,
   createNewUser,
   updateUser,
+  getUserProfile,
 };
