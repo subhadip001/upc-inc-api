@@ -3,12 +3,24 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModels");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
 
 const secret_key = "jwt-UPC-SeCrEt-KeY-FoR-AuThEnTiCaTiOn";
 
 const createToken = (id) => {
   return jwt.sign({ id }, secret_key);
 };
+
+const EmailUser = asyncHandler(async (req, res) => {
+  const { upc_id, code } = req.query;
+  const user = await User.findOne({ upc_id }).lean();
+  if (!user) {
+    return res.json({ message: "Wrong UPC id Or Password" });
+  } else {
+    const subject = "UPC INC Reset Password";
+    sendEmail(user.email, code, subject);
+  }
+});
 
 const getUserDetails = asyncHandler(async (req, res) => {
   const { upc_id, password } = req.query;
@@ -116,6 +128,61 @@ const updateUser = asyncHandler(async (req, res) => {
   });
   console.log(updateUser);
 });
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { email, code } = req.body;
+  console.log(email);
+  const subject = "UPC INC Email Verification";
+  const resp = await sendEmail(email, code, subject);
+  console.log(resp);
+  res.json(resp);
+});
+const resetPassword = asyncHandler(async (req, res) => {
+  const { upc_id, newPass } = req.body;
+  let user = await User.findOne({ upc_id: upc_id }).exec();
+  user.password = newPass;
+  const updatedUser = await user.save().then(() => {
+    res.status(200).json({
+      success: true,
+      message: "updated",
+    });
+  });
+});
+const sendEmail = async (email, code, subject) => {
+  const emailHTML = `<h3>Email verification Code</h3>
+     <h1>"${code}"</h1>
+     <p>Please enter this verification code and verify your email</p>`;
+
+  let smtpTransport = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "atharvakvrdso@gmail.com",
+      pass: "icjlcqmqauwaucch",
+    },
+  });
+  //  let transporter = nodemailer.createTransport({
+  //    service: "gmail",
+  //    auth: {
+  //      user: "atharvakvrdso@gmail.com",
+  //      pass: "AT06bh@$",
+  //    },
+  //  });
+
+  let mailOptions = {
+    from: "atharvakvrdso@gmail.com",
+    to: email,
+    subject: subject,
+    html: emailHTML,
+  };
+  await smtpTransport.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+      return err;
+    } else {
+      console.log(info);
+      return info;
+    }
+  });
+};
 //Register a user => /api/v1/register
 const testController = (req, res, next) => {
   res.status(200).json({
@@ -129,4 +196,7 @@ module.exports = {
   createNewUser,
   updateUser,
   getUserProfile,
+  verifyEmail,
+  EmailUser,
+  resetPassword,
 };
