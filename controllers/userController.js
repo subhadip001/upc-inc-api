@@ -21,6 +21,26 @@ const EmailUser = asyncHandler(async (req, res) => {
     sendEmail(user.email, code, subject);
   }
 });
+const deleteUser = asyncHandler(async (req, res) => {
+  const { upc_id } = req.query;
+  try {
+    await User.findOneAndRemove({ upc_id: upc_id });
+    res.json({ message: "User deleted Successfully!" });
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  if (!users) {
+    return res.json({
+      message: "no users find yet",
+    });
+  } else {
+    res.json({ users: users });
+    console.log(users);
+  }
+});
 
 const getUserDetails = asyncHandler(async (req, res) => {
   const { upc_id, password } = req.query;
@@ -128,6 +148,49 @@ const updateUser = asyncHandler(async (req, res) => {
   });
   console.log(updateUser);
 });
+
+const EditUser = asyncHandler(async (req, res) => {
+  const { user } = req.body;
+  console.log("patch req : " + user.upc_id);
+
+  let userUp = await User.findOne({ upc_id: user.upc_id }).exec();
+  if (!userUp) {
+    console.log(userUp);
+    return res
+      .status(400)
+      .json({ message: `user not found, please login again` });
+  }
+  userUp.name = user.name;
+  userUp.email = user.email;
+  userUp.contactNo = user.contactNo;
+  userUp.alt_contact = user.alt_contact;
+  userUp.gender = user.gender;
+  userUp.DOB = user.DOB;
+  userUp.father_name = user.father_name;
+  userUp.mother_name = user.mother_name;
+  userUp.father_email = user.father_email;
+  userUp.category = user.category;
+  userUp.nationality = user.nationality;
+  userUp.pwd = user.pwd;
+  userUp.marital_status = user.marital_status;
+  userUp.id_type = user.id_type;
+  userUp.id_number = user.id_number;
+  userUp.address_present = user.address_present;
+  userUp.address_permanent = user.address_permanent;
+  userUp.education_details = user.education_details;
+  userUp.imp_docs = user.imp_docs;
+  userUp.marital_status = user.marital_status;
+  userUp.id_type = user.id_type;
+
+  const updatedUser = await userUp.save().then(() => {
+    res.status(200).json({
+      success: true,
+      message: "updated",
+    });
+  });
+  console.log(updateUser);
+});
+
 const verifyEmail = asyncHandler(async (req, res) => {
   const { email, code } = req.body;
   console.log(email);
@@ -199,4 +262,7 @@ module.exports = {
   verifyEmail,
   EmailUser,
   resetPassword,
+  EditUser,
+  getAllUsers,
+  deleteUser,
 };

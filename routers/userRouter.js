@@ -17,6 +17,7 @@ const {
   testController,
   verifyEmail,
   EmailUser,
+  EditUser,
 } = require("../controllers/userController");
 
 router.route("/test").get(testController);
@@ -27,5 +28,8 @@ router.route("/update").patch(updateUser);
 router.route("/verify").post(verifyEmail);
 router.route("/resetEmail").get(EmailUser);
 router.route("/resetPass").patch(resetPassword);
+router.route("/edit").patch(EditUser);
+router.route("/getAll").get(getAllUsers);
+router.route("/deleteOne").delete(deleteUser);
 
 module.exports = router;
