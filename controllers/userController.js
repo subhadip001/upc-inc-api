@@ -182,13 +182,19 @@ const EditUser = asyncHandler(async (req, res) => {
   userUp.marital_status = user.marital_status;
   userUp.id_type = user.id_type;
 
-  const updatedUser = await userUp.save().then(() => {
-    res.status(200).json({
-      success: true,
-      message: "updated",
-    });
-  });
-  console.log(updateUser);
+  const updated = await User.findOneAndUpdate(
+    { upc_id: user.upc_id },
+    { $set: { ...userUp } },
+    { new: true }
+  );
+
+  // const updatedUser = await userUp.save().then(() => {
+  //   res.status(200).json({
+  //     success: true,
+  //     message: "updated",
+  //   });
+  // });
+  // console.log(updateUser);
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
