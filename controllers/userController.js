@@ -140,7 +140,7 @@ const updateUser = asyncHandler(async (req, res) => {
   userUp.publication = user.publication;
   userUp.reference = user.reference;
 
-  const updatedUser = await userUp.save().then(() => {
+  const updatedUser = userUp.save().then(() => {
     res.status(200).json({
       success: true,
       message: "updated",
