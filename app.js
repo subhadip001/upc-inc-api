@@ -30,11 +30,18 @@ app.use((req, res, next) => {
 });
 
 app.use(
-  cors({
-    origin: ["*"],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
-  })
+  cors([
+    {
+      origin: ["http://localhost:5173/", "https://upc-inc-web.vercel.app/"],
+      methods: ["GET", "POST", "PATCH", "DELETE"],
+      credentials: true,
+    },
+    {
+      origin: ["https://upc-inc-web.vercel.app/"],
+      methods: ["GET", "POST", "PATCH", "DELETE"],
+      credentials: true,
+    },
+  ])
 );
 
 if (process.env.NODE_ENV !== "production") {
