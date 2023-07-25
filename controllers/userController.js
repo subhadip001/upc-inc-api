@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModels");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
 const secret_key = "jwt-UPC-SeCrEt-KeY-FoR-AuThEnTiCaTiOn";
