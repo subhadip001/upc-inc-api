@@ -71,23 +71,28 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
   console.log(req.body);
 
   const token = req.cookies.jwt;
+  console.log(token)
   if (token) {
     jwt.verify(token, secret_key, async (err, decodedToken) => {
       if (err) {
         res.json({ status: false });
+        console.log("here it is 1")
         next();
       } else {
         const user = await User.findById(decodedToken.id);
         if (user) {
           res.json({ status: true, user: user });
+          console.log("here it is 2")
         } else {
           res.json({ status: false });
+          console.log("here it is 3")
           next();
         }
       }
     });
   } else {
     res.json({ status: false });
+    console.log("here it is 4")
     next();
   }
 });
