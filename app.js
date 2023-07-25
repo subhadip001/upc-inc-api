@@ -8,14 +8,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // app.use((req, res, next) => {
-//   // res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+//   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
 //   res.header(
 //     "Access-Control-Allow-Headers",
 //     "Origin, X-Requested-With, Content-Type, Accept, Authorization,  X-PINGOTHER"
@@ -29,18 +28,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // });
 
 app.use(
-  cors([
-    {
-      origin: ["http://localhost:5173/", "https://upc-inc-web.vercel.app/"],
-      methods: ["GET", "POST", "PATCH", "DELETE"],
-      credentials: true,
-    },
-    {
-      origin: ["https://upc-inc-web.vercel.app/"],
-      methods: ["GET", "POST", "PATCH", "DELETE"],
-      credentials: true,
-    },
-  ])
+  cors({
+    origin: ["http://localhost:5173","https://upc-inc-web.vercel.app/"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+    optionsSuccessStatus:200
+  })
 );
 
 if (process.env.NODE_ENV !== "production") {

@@ -1,8 +1,7 @@
-//write the code for the user controller here.
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModels");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
 const secret_key = "jwt-UPC-SeCrEt-KeY-FoR-AuThEnTiCaTiOn";
@@ -72,23 +71,28 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
   console.log(req.body);
 
   const token = req.cookies.jwt;
+  console.log(token)
   if (token) {
     jwt.verify(token, secret_key, async (err, decodedToken) => {
       if (err) {
         res.json({ status: false });
+        console.log("here it is 1")
         next();
       } else {
         const user = await User.findById(decodedToken.id);
         if (user) {
           res.json({ status: true, user: user });
+          console.log("here it is 2")
         } else {
           res.json({ status: false });
+          console.log("here it is 3")
           next();
         }
       }
     });
   } else {
     res.json({ status: false });
+    console.log("here it is 4")
     next();
   }
 });
@@ -140,7 +144,7 @@ const updateUser = asyncHandler(async (req, res) => {
   userUp.publication = user.publication;
   userUp.reference = user.reference;
 
-  const updatedUser = userUp.save().then(() => {
+  const updatedUser = await userUp.save().then(() => {
     res.status(200).json({
       success: true,
       message: "updated",
@@ -182,19 +186,13 @@ const EditUser = asyncHandler(async (req, res) => {
   userUp.marital_status = user.marital_status;
   userUp.id_type = user.id_type;
 
-  const updated = await User.findOneAndUpdate(
-    { upc_id: user.upc_id },
-    { $set: { ...userUp } },
-    { new: true }
-  );
-
-  // const updatedUser = await userUp.save().then(() => {
-  //   res.status(200).json({
-  //     success: true,
-  //     message: "updated",
-  //   });
-  // });
-  // console.log(updateUser);
+  const updatedUser = await userUp.save().then(() => {
+    res.status(200).json({
+      success: true,
+      message: "updated",
+    });
+  });
+  console.log(updateUser);
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
