@@ -58,6 +58,8 @@ const getUserDetails = asyncHandler(async (req, res) => {
       res.cookie("jwt", token, {
         withCredentials: true,
         httpOnly: false,
+        sameSite:"none",
+        secure:true
       });
       res.status(201).json({ user: user, token: token });
     } else {
@@ -68,9 +70,9 @@ const getUserDetails = asyncHandler(async (req, res) => {
   }
 });
 const getUserProfile = asyncHandler(async (req, res, next) => {
-  console.log(req.body);
+  console.log(req.cookies.jwt);
 
-  const token = req.cookies.jwt;
+  const token = req.cookies?.jwt;
   console.log(token)
   if (token) {
     jwt.verify(token, secret_key, async (err, decodedToken) => {
@@ -156,6 +158,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const EditUser = asyncHandler(async (req, res) => {
   const { user } = req.body;
   console.log("patch req : " + user.upc_id);
+  console.log(user)
 
   let userUp = await User.findOne({ upc_id: user.upc_id }).exec();
   if (!userUp) {
@@ -186,13 +189,13 @@ const EditUser = asyncHandler(async (req, res) => {
   userUp.marital_status = user.marital_status;
   userUp.id_type = user.id_type;
 
-  const updatedUser = await userUp.save().then(() => {
+  await userUp.save().then(() => {
     res.status(200).json({
       success: true,
       message: "updated",
     });
   });
-  console.log(updateUser);
+  // console.log(updateUser);
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
