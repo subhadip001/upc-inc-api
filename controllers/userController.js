@@ -57,9 +57,9 @@ const getUserDetails = asyncHandler(async (req, res) => {
       const token = createToken(user._id);
       res.cookie("jwt", token, {
         withCredentials: true,
-        httpOnly: false,
+        httpOnly: true,
         sameSite:"none",
-        secure:true
+        // secure:true
       });
       res.status(201).json({ user: user, token: token });
     } else {
