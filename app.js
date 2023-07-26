@@ -21,7 +21,6 @@ const cookieParser = require("cookie-parser");
 //   next();
 // });
 
-
 // app.use(
 //   cors({
 //     origin: ["http://localhost:5173","https://upc-inc-web.vercel.app","https://frontend--tranquil-beignet-fe781b.netlify.app"],
@@ -31,31 +30,24 @@ const cookieParser = require("cookie-parser");
 //   })
 // );
 
-const allowedOrigins = ['http://localhost:5173', 'https://upc-inc-web.vercel.app', 'https://frontend--tranquil-beignet-fe781b.netlify.app'];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://upc-inc-web.vercel.app",
+  "https://frontend--tranquil-beignet-fe781b.netlify.app",
+];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, // Allow including cookies in cross-origin requests
-    exposedHeaders: ['Access-Control-Allow-Credentials'],
+    exposedHeaders: ["Access-Control-Allow-Credentials"],
   })
 );
 
-
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
-
-
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config({ path: "config/config.env" });

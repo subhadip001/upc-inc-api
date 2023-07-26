@@ -57,9 +57,10 @@ const getUserDetails = asyncHandler(async (req, res) => {
       const token = createToken(user._id);
       res.cookie("jwt", token, {
         withCredentials: true,
-        httpOnly: false,
-        sameSite:"none",
-        secure:true
+        httpOnly: true,
+        sameSite: "none",
+        // secure:true
+        //changed
       });
       res.status(201).json({ user: user, token: token });
     } else {
@@ -73,28 +74,28 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
   console.log(req.cookies.jwt);
 
   const token = req.cookies?.jwt;
-  console.log(token)
+  console.log(token);
   if (token) {
     jwt.verify(token, secret_key, async (err, decodedToken) => {
       if (err) {
         res.json({ status: false });
-        console.log("here it is 1")
+        console.log("here it is 1");
         next();
       } else {
         const user = await User.findById(decodedToken.id);
         if (user) {
           res.json({ status: true, user: user });
-          console.log("here it is 2")
+          console.log("here it is 2");
         } else {
           res.json({ status: false });
-          console.log("here it is 3")
+          console.log("here it is 3");
           next();
         }
       }
     });
   } else {
     res.json({ status: false });
-    console.log("here it is 4")
+    console.log("here it is 4");
     next();
   }
 });
@@ -158,7 +159,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const EditUser = asyncHandler(async (req, res) => {
   const { user } = req.body;
   console.log("patch req : " + user.upc_id);
-  console.log(user)
+  console.log(user);
 
   let userUp = await User.findOne({ upc_id: user.upc_id }).exec();
   if (!userUp) {
@@ -257,7 +258,7 @@ const sendEmail = async (email, code, subject) => {
 const testController = (req, res, next) => {
   res.status(200).json({
     success: true,
-    message: "This is a test controller",
+    message: "This is a test controller updated 1",
   });
 };
 module.exports = {
