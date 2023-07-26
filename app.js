@@ -32,7 +32,7 @@ const cookieParser = require("cookie-parser");
 // );
 
 const allowedOrigins = ['http://localhost:5173', 'https://upc-inc-web.vercel.app', 'https://frontend--tranquil-beignet-fe781b.netlify.app'];
-
+//changed
 app.use(
   cors({
     origin: allowedOrigins,

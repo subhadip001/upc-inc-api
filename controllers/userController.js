@@ -60,6 +60,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
         httpOnly: true,
         sameSite:"none",
         // secure:true
+        //changed
       });
       res.status(201).json({ user: user, token: token });
     } else {
