@@ -259,6 +259,7 @@ const testController = (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "This is a test controller updated 1",
+    message: "This is a test controller updated 1",
   });
 };
 module.exports = {
