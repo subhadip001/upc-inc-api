@@ -55,7 +55,10 @@ if (process.env.NODE_ENV !== "production") {
 
 const path = require("path");
 const userRouter = require("./routers/userRouter");
+const linkRouter=require('./routers/linkRouter')
 
+
+app.use("/upc/api/v1",linkRouter)
 app.use("/upc/api/v1", userRouter);
 
 if (process.env.NODE_ENV === "production") {
